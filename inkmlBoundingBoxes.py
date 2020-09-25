@@ -7,7 +7,7 @@ from copy import deepcopy
 def flatten(listOfLists):
     # taken directly from recipes in itertools documentation
     "Flatten one level of nesting"
-    return itertools.chain.from_iterable(listOfLists)
+    return list(itertools.chain.from_iterable(listOfLists))
 
 
 def extractFromInkML(filename):
@@ -52,13 +52,16 @@ def extractFromInkML(filename):
     for child in root[len(root) - 1]:
         if not child.attrib == {'type': 'truth'}:  # skips info node
             symbol = child[0].text
-            traceNumber = [int(child[1].attrib['traceDataRef'])]
+            traceNumbers = []
+            for trace in range(1,
+                               len(child) - 1):  # stop before last annotation
+                traceNumbers += [int(child[trace].attrib['traceDataRef'])]
             if symbol not in traceGroups:
                 # isn't in dictionary yet
-                traceGroups[symbol] = traceNumber
+                traceGroups[symbol] = [traceNumbers]
             else:
                 # append to existing list
-                traceGroups[symbol] += traceNumber
+                traceGroups[symbol] += [traceNumbers]
     return (latex, coordinates, traceGroups)
 
 
@@ -75,7 +78,7 @@ def latexToElements(latex):
     # first, want to get rid of enclosing matrix tags
     begin = "matrix}"  # want to capture everything after this
     end = "\\end"  # want to capture everything before this
-    bracketDictionary = {"p": "()", "b": "[]", "B": "{}", "v": "||"}
+    bracketDictionary = {"p": "()", "b": "[]", "B": "{}"}
 
     bracketSymbol = latex[latex.find(begin) - 1]
     elementText = latex[latex.find(begin) + 7:latex.find(end)].strip()
@@ -138,27 +141,41 @@ def elementsToBoundingBoxes(elements, brackets, tg, imageXY, coordinates):
             ed = {}
             overallBox = [inf, -inf, inf, -inf]
             for character in elements[r][c]:
+
                 if character not in traceGroups:  # ignoring spaces and the like
                     continue
                 potentialTraces = traceGroups[character]
                 if len(potentialTraces) == 1:  # only one potential trace
                     minmax = minmaxFromCoordinates(
-                        coordinates[potentialTraces[0]])
+                        coordinates[potentialTraces[0][0]])
                     traceGroups[character].remove(potentialTraces[0])
                 else:
                     # calculate via grid roughly where we would expect the corresponding trace to be
+                    # origin in top left corner
                     centerCoordX = int(
                         (xmin + xmax) / len(elements[0]) * (0.5 + c))
-                    centerCoordY = int((ymin + ymax) / len(elements) *
-                                       (len(elements) - +r - 1 + 0.5))
+                    centerCoordY = int(
+                        (ymin + ymax) / len(elements) * (r + 0.5))
                     # find trace with its center closest to the expected center
-                    closestTrace = min([[
-                        dist(centerFromCoordinates(coordinates[trace]),
-                             [centerCoordX, centerCoordY]), trace
-                    ] for trace in potentialTraces])
-                    traceNumber = closestTrace[1]
-                    minmax = minmaxFromCoordinates(coordinates[traceNumber])
-                    traceGroups[character].remove(traceNumber)
+                    closestTraces = min([[
+                        dist(
+                            centerFromCoordinates(
+                                flatten(
+                                    [coordinates[trace] for trace in traces])),
+                            [centerCoordX, centerCoordY]), traces
+                    ] for traces in potentialTraces])
+                    print([[
+                        centerFromCoordinates(
+                            flatten([coordinates[trace] for trace in traces])),
+                        [centerCoordX, centerCoordY], traces
+                    ] for traces in potentialTraces])
+                    print([centerCoordX, centerCoordY])
+                    print(closestTraces)
+                    traceNumbers = closestTraces[1]
+                    minmax = minmaxFromCoordinates(
+                        flatten([coordinates[trace]
+                                 for trace in traceNumbers]))
+                    traceGroups[character].remove(traceNumbers)
                 overallBox = [
                     min(x, y) if ind % 2 == 0 else max(x, y)
                     for ind, (x, y) in enumerate(zip(overallBox, minmax))
@@ -166,38 +183,23 @@ def elementsToBoundingBoxes(elements, brackets, tg, imageXY, coordinates):
                 ed[character] = minmax
             ed[elements[r][c]] = overallBox
             d += [ed]
-    ## need to deal with leftover traces, like for brackets
-    for character, traces in traceGroups.items():
-        for trace in traces:
-            ed = {}
-            minmax = minmaxFromCoordinates(coordinates[trace])
-            ed[character] = minmax
-            if character not in d:  # character not represented, likely brackets
-                d += [ed]
-                traceGroups[character].remove(trace)
+    # deal with brackets
+    for character in brackets:
+        # assumes no duplicate bracket characters in matrix, and that
+        # for vertical matrices brackets are drawn left to right
+        traces = traceGroups[character][0]
+        minmax = minmaxFromCoordinates(coordinates[traces[0]])
+        traceGroups[character].remove(traces)
+        ed = {}
+        ed[character] = minmax
+        d += [ed]
 
-            else:  # case where a single character took more than one stroke
-                potentialGroups = [group for group in d if character in group]
-                characterCoordinates = [
-                    group[character] for group in potentialGroups
-                ]
-                traceCenter = centerFromCorners(minmax)
-                closestGroup = min(
-                    [[dist(centerFromCorners(coords), traceCenter), coords]
-                     for coords in characterCoordinates])
-                group = potentialGroups[characterCoordinates.find(
-                    closestGroup)]
-                groupIndex = d.find(group)
-                group[character] = [
-                    min(x, y) if ind % 2 == 0 else max(x, y)
-                    for ind, (x, y) in enumerate(zip(group[character], minmax))
-                ]
-                d[groupIndex] = group
     return d
 
 
 [latex, coordinates,
  traceGroups] = extractFromInkML("RIT_MatrixTest_2014_3.inkml")
-# [elements, brackets] = latexToElements(latex)
-# imageXY = minmaxFromCoordinates(list(flatten(coordinates)))
-# a = elementsToBoundingBoxes(elements, "()", traceGroups, imageXY, coordinates)
+[elements, brackets] = latexToElements(latex)
+imageXY = minmaxFromCoordinates(flatten(coordinates[1:len(coordinates) - 1]))
+a = elementsToBoundingBoxes(elements, brackets, traceGroups, imageXY,
+                            coordinates)
