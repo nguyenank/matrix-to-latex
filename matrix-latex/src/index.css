@@ -13,7 +13,7 @@ code {
 }
 
 body { 
-  background-image: url(./resources/flowers_bg.png); 
+  background-color: beige; 
   background-repeat: no-repeat; 
   background-position: center;
   background-attachment: fixed;       

@@ -17,7 +17,7 @@ class LandingPage extends React.Component {
                     <div className="col-12 center-div">
                         <button class="btn btn-primary" type="button" disabled>
                             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                            Detecting flower
+                            Detecting Matrix
                         </button>
                     </div>
                 </div>
@@ -30,14 +30,12 @@ class LandingPage extends React.Component {
             <div className="container">
                 <div className="row">
                     <h1 className="col-12 header">
-                        Flower Classifier
+                        Matrix to LaTex
                     </h1>
                 </div>
                 <div className="row">
                     <div className="col-12 message">
-                        This simple flower classifier can identify the following flowers using their image:
-                        Daisy, Dandelion, Rose, Sunflower and Tulip.
-                        Upload your image below:
+                        This classifier is able to detect matrices and return LaTex code.
                     </div>
                 </div>
                 <div className="row">
