@@ -9,7 +9,7 @@ class FlowerClassifier extends React.Component {
         console.log('im gonna post request');
         var formData = new FormData();
         formData.append('image', this.state.img_file);
-        fetch('https://matrix-to-latex.onrender.com/predict', {
+        fetch('https://flower-classifier.onrender.com/predict', {
             method: 'POST',
             body: formData
         }).then(
