@@ -164,13 +164,6 @@ def elementsToBoundingBoxes(elements, brackets, tg, imageXY, coordinates):
                                     [coordinates[trace] for trace in traces])),
                             [centerCoordX, centerCoordY]), traces
                     ] for traces in potentialTraces])
-                    print([[
-                        centerFromCoordinates(
-                            flatten([coordinates[trace] for trace in traces])),
-                        [centerCoordX, centerCoordY], traces
-                    ] for traces in potentialTraces])
-                    print([centerCoordX, centerCoordY])
-                    print(closestTraces)
                     traceNumbers = closestTraces[1]
                     minmax = minmaxFromCoordinates(
                         flatten([coordinates[trace]
