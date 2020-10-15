@@ -1,5 +1,5 @@
 train: ../digits/images/train/
-val: ../coco128/images/val/
+val: ../digits/images/val/
 
 # number of classes
 nc: 10
