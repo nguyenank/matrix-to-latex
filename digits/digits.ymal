@@ -1,0 +1,8 @@
+train: ../digits/images/train/
+val: ../coco128/images/val/
+
+# number of classes
+nc: 10
+
+# class names
+names: ['0','1','2','3','4','5','6','7','8','9']
