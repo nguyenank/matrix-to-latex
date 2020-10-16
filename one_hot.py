@@ -1,6 +1,8 @@
 import numpy as np
 
 "From https://github.com/RobinXL/inkml2img"
+
+
 # Encode to one_hot format
 def encode(class_name, classes):
 
@@ -9,6 +11,7 @@ def encode(class_name, classes):
     one_hot[class_index] = 1
 
     return one_hot
+
 
 # Decode from one_hot format to string
 def decode(one_hot, classes):
