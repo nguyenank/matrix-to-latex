@@ -5,10 +5,12 @@
 #
 # TO USE: run 'resultstolatex(filepath, classes)'
 
-CLASSES = ['(','-3','1','-4','2',')','0','3','-2','-7','19',
-'70','4','-1','5','|','6','-10','10',
-'-25','-9','8','7','-5','9','[',']','a','b','c','d',
-'-6','28','-x','12','-8','-b','-c']
+CLASSES = [
+    '(', '-3', '1', '-4', '2', ')', '0', '3', '-2', '-7', '19', '70', '4',
+    '-1', '5', '|', '6', '-10', '10', '-25', '-9', '8', '7', '-5', '9', '[',
+    ']', 'a', 'b', 'c', 'd', '-6', '28', '-x', '12', '-8', '-b', '-c'
+]
+
 
 def to_array(results):
     """
@@ -30,15 +32,15 @@ def to_array(results):
                        results))))
 
     results = list(
-        filter(lambda x: x[0] not in ["(", ")", "[", "]", "{", "}"],
-               results))
+        filter(lambda x: x[0] not in ["(", ")", "[", "]", "{", "}"], results))
     elements = []
     while len(results) > 0:
         # find object closest to the top of image
         [y_coordinate, element] = min(map(lambda x: [x[1][1], x], results))
         # find all elements with center within margin of error (5% either way) of that element
         row_elements = list(
-            filter(lambda x: within_margin(x[1][1], y_coordinate, 0.05), results))
+            filter(lambda x: within_margin(x[1][1], y_coordinate, 0.05),
+                   results))
         for elem in row_elements:
             results.remove(elem)
         # sort by x-coordinates
@@ -47,6 +49,7 @@ def to_array(results):
         row = list(map(lambda x: x[1], x_coord_elements))
         elements += [row]
     return [brackets, elements]
+
 
 def to_latex(brackets, elements):
     """
@@ -76,12 +79,14 @@ def to_latex(brackets, elements):
         s += "\\\\ "
     return s[:-3] + end
 
+
 def within_margin(testvalue, mainvalue, margin):
     """
     returns true if and only if testvalue is within margin of mainvalue
     """
     return (testvalue <= mainvalue + margin) and (testvalue >=
                                                   mainvalue - margin)
+
 
 def read_file(filepath, classes):
     """
@@ -103,8 +108,10 @@ def read_file(filepath, classes):
     # convert from strings to numbers
     lines = list(map(lambda line: list(map(float, line)), lines))
     # change to nested list with 3 elements: symbol class, [x_center, y_center]
-    converted = list(map(lambda line: [classes[int(line[0])], line[1:3]], lines))
+    converted = list(
+        map(lambda line: [classes[int(line[0])], line[1:3]], lines))
     return converted
+
 
 def results_to_latex(filepath, classes):
     """
@@ -114,5 +121,6 @@ def results_to_latex(filepath, classes):
     results = read_file(filepath, classes)
     [brackets, elements] = to_array(results)
     return to_latex(brackets, elements)
+
 
 print(results_to_latex('./test-data/test.txt', CLASSES))
