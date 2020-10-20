@@ -2,12 +2,15 @@ import imghdr
 import os
 from flask import Flask, render_template, request, redirect, url_for, abort, \
     send_from_directory
+from flask_bootstrap import Bootstrap
 
 app = Flask(__name__)
+Bootstrap(app)
 app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024
 app.config['UPLOAD_EXTENSIONS'] = ['.jpg', '.png', '.gif']
 app.config['UPLOAD_PATH'] = './uploads'
 app.config['OUTPUT_PATH'] = './output'
+
 
 def validate_image(stream):
     header = stream.read(512)  # 512 bytes should be enough for a header check
@@ -20,6 +23,7 @@ def validate_image(stream):
 @app.route('/')
 def index():
     files = os.listdir(app.config['OUTPUT_PATH'])
+    url_for('static', filename='style.css')
     return render_template('index.html', files=files)
 
 @app.route('/', methods=['POST'])
