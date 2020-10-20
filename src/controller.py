@@ -6,8 +6,8 @@ from flask import Flask, render_template, request, redirect, url_for, abort, \
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024
 app.config['UPLOAD_EXTENSIONS'] = ['.jpg', '.png', '.gif']
-app.config['UPLOAD_PATH'] = './uploads'
-app.config['OUTPUT_PATH'] = './output'
+app.config['UPLOAD_PATH'] = './assets/uploads'
+app.config['OUTPUT_PATH'] = './assets/output'
 
 def validate_image(stream):
     header = stream.read(512)  # 512 bytes should be enough for a header check
@@ -32,7 +32,7 @@ def upload_files():
                 file_ext != validate_image(uploaded_file.stream):
             abort(400)
         uploaded_file.save(os.path.join(app.config['UPLOAD_PATH'], filename))
-        os.system("python yolov5/detect.py --weights yolov5/last.pt --source uploads --out output --img 416 --conf 0.4 --save-txt")
+        os.system("python models/yolov5/detect.py --weights models/yolov5/last.pt --source assets/uploads --out assets/output --img 416 --conf 0.4 --save-txt")
     return redirect(url_for('index'))
 
 @app.route('/uploads/<filename>')

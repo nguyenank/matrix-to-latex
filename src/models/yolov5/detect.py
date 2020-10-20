@@ -27,7 +27,8 @@ def detect(save_img=False):
     device = select_device(opt.device)
     if os.path.exists(out):
         shutil.rmtree(out)  # delete output folder
-    os.makedirs(out)  # make new output folder
+    os.makedirs(out+"/images")  # make new output folder
+    os.makedirs(out+"/txts")  # make new output folder
     half = device.type != 'cpu'  # half precision only supported on CUDA
 
     # Load model
@@ -87,8 +88,8 @@ def detect(save_img=False):
             else:
                 p, s, im0 = path, '', im0s
 
-            save_path = str(Path(out) / Path(p).name)
-            txt_path = str(Path(out) / Path(p).stem) + ('_%g' % dataset.frame if dataset.mode == 'video' else '')
+            save_path = str(Path(out))+"/images/"+str(Path(p).name)
+            txt_path = str(Path(out))+"/txts/"+str(Path(p).stem) + ('_%g' % dataset.frame if dataset.mode == 'video' else '')
             s += '%gx%g ' % img.shape[2:]  # print string
             gn = torch.tensor(im0.shape)[[1, 0, 1, 0]]  # normalization gain whwh
             if det is not None and len(det):
