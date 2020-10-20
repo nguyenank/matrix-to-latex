@@ -32,7 +32,7 @@ def upload_files():
                 file_ext != validate_image(uploaded_file.stream):
             abort(400)
         uploaded_file.save(os.path.join(app.config['UPLOAD_PATH'], filename))
-        os.system("python models/yolov5/detect.py --weights models/yolov5/last.pt --source assets/uploads --out assets/output --img 416 --conf 0.4 --save-txt")
+        os.system("python models/yolov5/detect.py --weights models/yolov5/last.pt --source assets/uploads --out assets/output --img 416 --conf 0.4 --save-txt")    
     return redirect(url_for('index'))
 
 @app.route('/uploads/<filename>')

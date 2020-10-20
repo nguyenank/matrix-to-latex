@@ -1,6 +1,3 @@
-from model.yolo.detect import detect
-import argparse
-import os
+from models.tolatex.resultstolatex import results_to_latex
 
-os.system("python model/yolov5/detect.py --weights webapp/last.pt --source webapp/inference/images --out webapp/inference/output --img 416 --conf 0.4 --save-txt")
-#python detect.py --weights last.pt --img 416 --conf 0.4 --save-txt
+print(results_to_latex('./model/yolov5/inference/output/7_em_36.txt', CLASSES))
