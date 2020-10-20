@@ -13,5 +13,8 @@
     {% for file in files %}
       <img src="{{ url_for('upload', filename=file) }}" style="width: 64px">
     {% endfor %}
+    {% for file in files %}
+      <img src="{{ url_for('output', filename=file) }}" style="width: 128px">
+    {% endfor %}
   </body>
 </html>
