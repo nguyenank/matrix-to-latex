@@ -8,8 +8,8 @@ from models.tolatex.resultstolatex import CLASSES
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024
 app.config['UPLOAD_EXTENSIONS'] = ['.jpg', '.png', '.gif']
-app.config['UPLOAD_PATH'] = './assets/uploads'
-app.config['OUTPUT_PATH'] = './assets/output'
+app.config['UPLOAD_PATH'] = './static/uploads'
+app.config['OUTPUT_PATH'] = './static/output'
 
 def validate_image(stream):
     header = stream.read(512)  # 512 bytes should be enough for a header check
@@ -36,14 +36,14 @@ def upload_files():
                 file_ext != validate_image(uploaded_file.stream):
             abort(400)
         uploaded_file.save(os.path.join(app.config['UPLOAD_PATH'], filename))
-        os.system("python models/yolov5/detect.py --weights models/yolov5/last.pt --source assets/uploads --out assets/output --img 416 --conf 0.4 --save-txt")
+        full_filename = os.path.join(app.config['UPLOAD_PATH'], filename)
+        print(full_filename)
+        os.system("python models/yolov5/detect.py --weights models/yolov5/last.pt --source static/uploads --out static/output --img 416 --conf 0.4 --save-txt")
         print('Here is the LaTeX Code')
-        print(results_to_latex(('./assets/output/txts/' + filename.strip('.jpg') + '.txt'), CLASSES))
-        latex = results_to_latex(('./assets/output/txts/' + filename.strip('.jpg') + '.txt'), CLASSES)
-        with open('textfile.txt', 'w') as f: 
-            f.write(latex)
-        with open("textfile.txt", "r") as f:
-            return render_template('index.html', text=f.read()) 
+        print(results_to_latex(('./static/output/txts/' + filename.strip('.jpg') + '.txt'), CLASSES))
+        latex = results_to_latex(('./static/output/txts/' + filename.strip('.jpg') + '.txt'), CLASSES)
+        # returning render_template instead of redirect(url_for('index')) broke the ability to display an image 
+        return render_template('index.html', latex=latex, matrix_image = full_filename, image_filename= filename) 
 
 @app.route('/uploads/<filename>')
 def upload(filename):

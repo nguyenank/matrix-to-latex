@@ -14,9 +14,18 @@
       <img src="{{ url_for('output', filename=file) }}" style="width: 128px">
     {% endfor %}
   </body>
+  <h2>Uploaded Image:</h2>
+  <body>
+    <img src="{{ matrix_image }}" alt="{{image_filename}}">
+  </body>
+  <p>File Name:</p>
+  <pre> 
+    {{ image_filename }} 
+  </pre> 
+    
   <h2>LaTeX Code for your Matrix:</h2>
   <pre> 
-    {{ text }} 
+    {{ latex }} 
   </pre> 
 </html>
 
