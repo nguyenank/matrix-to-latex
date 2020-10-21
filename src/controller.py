@@ -37,7 +37,7 @@ def upload_files():
             abort(400)
         uploaded_file.save(os.path.join(app.config['UPLOAD_PATH'], filename))
         os.system("python models/yolov5/detect.py --weights models/yolov5/last.pt --source assets/uploads --out assets/output --img 416 --conf 0.4 --save-txt")
-        print('Here is the LaTeX')
+        print('Here is the LaTeX Code')
         print(results_to_latex(('./assets/output/txts/' + filename.strip('.jpg') + '.txt'), CLASSES))
         latex = results_to_latex(('./assets/output/txts/' + filename.strip('.jpg') + '.txt'), CLASSES)
         with open('textfile.txt', 'w') as f: 
@@ -48,7 +48,6 @@ def upload_files():
 @app.route('/uploads/<filename>')
 def upload(filename):
     return send_from_directory(app.config['UPLOAD_PATH'], filename)
-
 
 @app.route('/output/<filename>')
 def output(filename):
