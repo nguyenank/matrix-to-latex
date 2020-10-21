@@ -1,3 +1,4 @@
 from models.tolatex.resultstolatex import results_to_latex
+from models.tolatex.resultstolatex import CLASSES
 
-print(results_to_latex('./model/yolov5/inference/output/7_em_36.txt', CLASSES))
+results_to_latex('/Users/jenniferzecena/matrix-to-latex/src/assets/output/txts/7_em_27.txt', CLASSES)

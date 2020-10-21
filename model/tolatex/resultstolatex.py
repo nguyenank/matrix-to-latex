@@ -123,4 +123,4 @@ def results_to_latex(filepath, classes):
     return to_latex(brackets, elements)
 
 
-print(results_to_latex('./model/yolov5/inference/output/7_em_36.txt', CLASSES))
+#print(results_to_latex('./models/yolov5/inference/output/7_em_36.txt', CLASSES))
