@@ -19,6 +19,7 @@ def validate_image(stream):
         return None
     return '.' + (format if format != 'jpeg' else 'jpg')
 
+
 @app.route('/')
 def index():
     files = os.listdir(app.config['OUTPUT_PATH'])
@@ -37,9 +38,12 @@ def upload_files():
         uploaded_file.save(os.path.join(app.config['UPLOAD_PATH'], filename))
         os.system("python models/yolov5/detect.py --weights models/yolov5/last.pt --source assets/uploads --out assets/output --img 416 --conf 0.4 --save-txt")
         print('Here is the LaTeX')
-        print(results_to_latex(('/Users/jenniferzecena/matrix-to-latex/src/assets/output/txts/' + filename.strip('.jpg') +'.txt'), CLASSES))
-    
-    return redirect(url_for('index'))
+        print(results_to_latex(('./assets/output/txts/' + filename.strip('.jpg') + '.txt'), CLASSES))
+        latex = results_to_latex(('./assets/output/txts/' + filename.strip('.jpg') + '.txt'), CLASSES)
+        with open('textfile.txt', 'w') as f: 
+            f.write(latex)
+        with open("textfile.txt", "r") as f:
+            return render_template('index.html', text=f.read()) 
 
 @app.route('/uploads/<filename>')
 def upload(filename):
