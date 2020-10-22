@@ -20,9 +20,9 @@ def to_array(results):
     input: list with elements in the form ['symbol class', [x_center, y_center]]
     output: list of the form [['bracket', 'bracket'], [2D array representing matrix]]
 
-    uses a + or - 5% margin of error for determining rows
+    uses a + or - 10% margin of error for determining rows
     """
-
+    MARGINOFERROR = .125
     # remove brackets
     brackets = list(
         map(
@@ -39,7 +39,7 @@ def to_array(results):
         [y_coordinate, element] = min(map(lambda x: [x[1][1], x], results))
         # find all elements with center within margin of error (5% either way) of that element
         row_elements = list(
-            filter(lambda x: within_margin(x[1][1], y_coordinate, 0.05),
+            filter(lambda x: within_margin(x[1][1], y_coordinate, MARGINOFERROR),
                    results))
         for elem in row_elements:
             results.remove(elem)
@@ -61,13 +61,13 @@ def to_latex(brackets, elements):
     output: string of LaTeX code
     """
     start = end = ""
-    if "(" in brackets:
+    if "(" in brackets or ")" in brackets:
         start = "$\\begin{pmatrix} "
         end = "\\end{pmatrix}$"
-    elif "[" in brackets:
+    elif "[" in brackets or "]" in brackets:
         start = "$\\begin{bmatrix} "
         end = "\\end{bmatrix}$"
-    elif "{" in brackets:
+    elif "{" in brackets or "}" in brackets:
         start = "$\\begin{Bmatrix} "
         end = "\\end{Bmatrix}$"
     s = start
@@ -123,4 +123,4 @@ def results_to_latex(filepath, classes):
     return to_latex(brackets, elements)
 
 
-print(results_to_latex('./test-data/test.txt', CLASSES))
+#print(results_to_latex('./models/yolov5/inference/output/7_em_36.txt', CLASSES))

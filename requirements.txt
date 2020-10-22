@@ -1,5 +1,13 @@
 Flask
 gunicorn
-fastai
-torch
-flask_cors
+Markdown
+matplotlib
+numpy
+opencv-python-headless
+Pillow
+requests
+scipy
+https://download.pytorch.org/whl/cpu/torch-1.6.0%2Bcpu-cp38-cp38-linux_x86_64.whl
+https://download.pytorch.org/whl/cpu/torchvision-0.7.0%2Bcpu-cp38-cp38-linux_x86_64.whl
+tqdm==4.50.2
+PyYAML==5.3.1
