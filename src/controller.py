@@ -51,7 +51,7 @@ def upload_files():
         print(txtFile)
         latex = results_to_latex(('./static/output/txts/' + txtFile), CLASSES)
         # returning render_template instead of redirect(url_for('index')) broke the ability to display an image 
-        return render_template('index.html', latex=latex, matrix_image = full_filename, image_filename= filename) 
+        return render_template('results.html', latex=latex, matrix_image = full_filename, image_filename= filename) 
 
 @app.route('/uploads/<filename>')
 def upload(filename):
@@ -60,3 +60,11 @@ def upload(filename):
 @app.route('/output/<filename>')
 def output(filename):
     return send_from_directory(app.config['OUTPUT_PATH'], filename)
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
+@app.route('/instructions')
+def instructions():
+    return render_template('instructions.html')

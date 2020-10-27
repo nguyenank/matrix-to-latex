@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<body>
+    <h1>MaTreX</h1>
+    <div class="container">
+        <div class="row">
+          <div class="col-sm">
+            <h2>Image Uploaded:</h2>
+            <img src="{{ matrix_image }}" alt="{{image_filename}}"> 
+            <p>File Name: {{ image_filename }} </p>
+          </div>
+          <div class="col-sm">
+            <h2>LaTeX Code for your Matrix:</h2>
+                <pre> 
+                    {{ latex }} 
+                </pre> 
+          </div>
+        </div>
+    </div>
+</body>
+{% endblock %}
+
+    
