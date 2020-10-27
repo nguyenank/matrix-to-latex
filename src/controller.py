@@ -41,9 +41,12 @@ def upload_files():
         print("This is the full_filename")
         print(full_filename)
         os.system("python models/yolov5/detect.py --weights models/yolov5/last.pt --source static/uploads --out static/output --img 416 --conf 0.4 --save-txt")
-        txtFile = filename.replace(".jpg",".txt")
-        txtFile = filename.replace(".jpeg",".txt")
-        txtFile = filename.replace(".png",".txt")
+        if(filename[-4:]==".jpg"):
+            txtFile = filename.replace(".jpg",".txt")
+        elif(filename[-4:]==".png"):
+            txtFile = filename.replace(".png",".txt")
+        else:
+            txtFile = filename.replace(".jpeg",".txt")
         print('This is the textFile:')
         print(txtFile)
         latex = results_to_latex(('./static/output/txts/' + txtFile), CLASSES)
