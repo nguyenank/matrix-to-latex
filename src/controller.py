@@ -29,6 +29,7 @@ def index():
 def upload_files():
     uploaded_file = request.files['file']
     filename = uploaded_file.filename
+    print("this is the filename:")
     print(filename)
     if filename != '':
         file_ext = os.path.splitext(filename)[1]
@@ -37,11 +38,14 @@ def upload_files():
             abort(400)
         uploaded_file.save(os.path.join(app.config['UPLOAD_PATH'], filename))
         full_filename = os.path.join(app.config['UPLOAD_PATH'], filename)
+        print("This is the full_filename")
         print(full_filename)
         os.system("python models/yolov5/detect.py --weights models/yolov5/last.pt --source static/uploads --out static/output --img 416 --conf 0.4 --save-txt")
         txtFile = filename.replace(".jpg",".txt")
         txtFile = filename.replace(".jpeg",".txt")
         txtFile = filename.replace(".png",".txt")
+        print('This is the textFile:')
+        print(txtFile)
         latex = results_to_latex(('./static/output/txts/' + txtFile), CLASSES)
         # returning render_template instead of redirect(url_for('index')) broke the ability to display an image 
         return render_template('index.html', latex=latex, matrix_image = full_filename, image_filename= filename) 
