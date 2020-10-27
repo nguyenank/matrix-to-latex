@@ -1,8 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<body>
-    <h1>MaTreX</h1>
+<div class="jumbotron">
+    <h2 class="display-4">Results</h2>
+    <p class="lead">Here is the LaTeX of your converted image. Please take a moment to check the LaTeX for errors before you copy and paste into your favorite text editor.
+    </p>
     <div class="container">
         <div class="row">
           <div class="col-sm">
@@ -18,7 +20,8 @@
           </div>
         </div>
     </div>
-</body>
+    <a class="btn btn-primary btn-lg" href="{{ url_for('index')}}" role="button">Convert Another Image Here</a>
+  </div>
 {% endblock %}
 
     
