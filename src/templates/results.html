@@ -7,17 +7,19 @@
     </p>
     <div class="container">
         <div class="row">
-          <div class="col-sm">
-            <h2>Image Uploaded:</h2>
-            <img src="{{ matrix_image }}" alt="{{image_filename}}"> 
-            <p>File Name: {{ image_filename }} </p>
-          </div>
-          <div class="col-sm">
-            <h2>LaTeX Code for your Matrix:</h2>
-                <pre> 
-                    {{ latex }} 
-                </pre> 
-          </div>
+            <div class="col-sm">
+                <h2>Image Uploaded:</h2>
+                <img src="{{ matrix_image }}" alt="{{image_filename}}"> 
+                <p>File Name: {{ image_filename }} </p>
+            </div>
+            <div class="col-sm">
+                <h2>LaTeX Code for your Matrix:</h2>
+                <textarea id="latexcode" rows="10" cols="25" readonly>{{ latex }}</textarea>
+            </div>
+            <div class="col-sm">
+                <h2>Rendered LaTeX:</h2>
+                <img src="{{ latex_image }}">
+            </div>
         </div>
     </div>
     <a class="btn btn-primary btn-lg" href="{{ url_for('index')}}" role="button">Convert Another Image Here</a>
