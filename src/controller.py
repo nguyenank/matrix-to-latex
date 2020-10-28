@@ -27,6 +27,8 @@ def index():
 
 @app.route('/', methods=['POST'])
 def upload_files():
+    os.system("rm -r static/uploads")
+    os.system("mkdir static/uploads")
     uploaded_file = request.files['file']
     filename = uploaded_file.filename
     if filename != '':
@@ -44,6 +46,8 @@ def upload_files():
         else:
             txtFile = filename.replace(".jpeg",".txt")
         latex = results_to_latex(('./static/output/txts/' + txtFile), CLASSES)
+        os.remove('./static/output/txts/' + txtFile)
+        os.remove('./static/output/images/' + filename)
         return render_template('results.html', latex=latex, matrix_image = full_filename, image_filename= filename) 
 
 @app.route('/uploads/<filename>')
