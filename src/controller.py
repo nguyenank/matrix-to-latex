@@ -50,9 +50,11 @@ def upload_files():
         else:
             txtFile = filename.replace(".jpeg",".txt")
         latex = results_to_latex(('./static/output/txts/' + txtFile), CLASSES)
+        latex_filename = './static/output/images/latex_' + filename.strip('.jpg')+".png"
+        displaylatex(latex.replace("\n", ""), latex_filename)
         os.remove('./static/output/txts/' + txtFile)
         os.remove('./static/output/images/' + filename)
-        return render_template('results.html', latex=latex, matrix_image = full_filename, image_filename= filename) 
+        return render_template('results.html', latex=latex, matrix_image = full_filename, image_filename= filename,latex_image = latex_filename) 
 
 @app.route('/uploads/<filename>')
 def upload(filename):
