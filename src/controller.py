@@ -4,6 +4,10 @@ from flask import Flask, render_template, request, redirect, url_for, abort, \
     send_from_directory
 from models.tolatex.resultstolatex import results_to_latex
 from models.tolatex.resultstolatex import CLASSES
+from models.displaylatex.displaylatex import displaylatex
+# allow latex rendering
+import matplotlib as mpl
+mpl.use('Agg')
 
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024

@@ -60,8 +60,8 @@ def to_latex(brackets, elements):
     """
     start = end = ""
     if "(" in brackets or ")" in brackets:
-        start = "\n$\\begin{pmatrix}\n"
-        end = "\n\\end{pmatrix}$"
+        start = "$\\begin{pmatrix} \n"
+        end = "\\end{pmatrix}$"
     elif "[" in brackets or "]" in brackets:
         start = "\n$\\begin{bmatrix}\n"
         end = "\n\\end{bmatrix}$"
@@ -75,7 +75,7 @@ def to_latex(brackets, elements):
             s += " & "
         s = s[:-2]  # remove last "& "
         s += "\\\\ \n"
-    return s[:-3] + end
+    return s[:-4] + end
 
 
 def within_margin(testvalue, mainvalue, margin):
