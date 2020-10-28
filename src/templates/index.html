@@ -19,14 +19,15 @@
     <img src="{{ matrix_image }}" alt="{{image_filename}}">
   </body>
   <p>File Name:</p>
-  <pre> 
-    {{ image_filename }} 
-  </pre> 
-    
+  <pre>
+    {{ image_filename }}
+  </pre>
+
   <h2>LaTeX Code for your Matrix:</h2>
-  <pre> 
-    {{ latex }} 
-  </pre> 
+  <textarea id="latexcode" rows="10" cols="25" readonly>{{ latex }}</textarea>
+
+  <h2>Rendered LaTeX:</h2>
+  <body>
+    <img src="{{ latex_image }}">
+  </body>
 </html>
-
-

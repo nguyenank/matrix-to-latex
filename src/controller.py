@@ -4,6 +4,10 @@ from flask import Flask, render_template, request, redirect, url_for, abort, \
     send_from_directory
 from models.tolatex.resultstolatex import results_to_latex
 from models.tolatex.resultstolatex import CLASSES
+from models.displaylatex.displaylatex import displaylatex
+# allow latex rendering
+import matplotlib as mpl
+mpl.use('Agg')
 
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024
@@ -37,13 +41,18 @@ def upload_files():
             abort(400)
         uploaded_file.save(os.path.join(app.config['UPLOAD_PATH'], filename))
         full_filename = os.path.join(app.config['UPLOAD_PATH'], filename)
-        print(full_filename)
+        # print(full_filename)
         os.system("python models/yolov5/detect.py --weights models/yolov5/last.pt --source static/uploads --out static/output --img 416 --conf 0.4 --save-txt")
-        print('Here is the LaTeX Code')
-        print(results_to_latex(('./static/output/txts/' + filename.strip('.jpg') + '.txt'), CLASSES))
+        # print('Here is the LaTeX Code')
+        # print(results_to_latex(('./static/output/txts/' + filename.strip('.jpg') + '.txt'), CLASSES))
         latex = results_to_latex(('./static/output/txts/' + filename.strip('.jpg') + '.txt'), CLASSES)
-        # returning render_template instead of redirect(url_for('index')) broke the ability to display an image 
-        return render_template('index.html', latex=latex, matrix_image = full_filename, image_filename= filename) 
+        latex_filename = './static/output/images/latex_' + filename.strip('.jpg')+".png"
+        # generate rendered latex output
+        displaylatex(latex.replace("\n", ""), latex_filename)
+
+        # returning render_template instead of redirect(url_for('index')) broke the ability to display an image
+        return render_template('index.html', latex=latex, matrix_image = full_filename, image_filename= filename, latex_image = latex_filename)
+
 
 @app.route('/uploads/<filename>')
 def upload(filename):
