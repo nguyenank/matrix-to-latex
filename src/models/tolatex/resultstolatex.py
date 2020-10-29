@@ -118,6 +118,3 @@ def results_to_latex(filepath, classes):
     results = read_file(filepath, classes)
     [brackets, elements] = to_array(results)
     return to_latex(brackets, elements)
-
-
-#print(results_to_latex('./models/yolov5/inference/output/7_em_36.txt', CLASSES))
