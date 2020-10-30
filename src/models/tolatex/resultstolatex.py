@@ -61,7 +61,7 @@ def to_latex(brackets, elements):
     start = end = ""
     if "(" in brackets or ")" in brackets:
         start = "$\\begin{pmatrix} \n"
-        end = "\\end{pmatrix}$"
+        end = "\n \\end{pmatrix}$"
     elif "[" in brackets or "]" in brackets:
         start = "\n$\\begin{bmatrix}\n"
         end = "\n\\end{bmatrix}$"

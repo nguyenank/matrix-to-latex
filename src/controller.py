@@ -33,6 +33,8 @@ def index():
 def upload_files():
     os.system("rm -r static/uploads")
     os.system("mkdir static/uploads")
+    os.system("rm -r static/output")
+    os.system("mkdir static/output")
     uploaded_file = request.files['file']
     filename = uploaded_file.filename
     if filename != '':
@@ -56,8 +58,7 @@ def upload_files():
         print(txtFile)
         print(results_to_latex(('./static/output/txts/' + txtFile), CLASSES))
         latex = results_to_latex(('./static/output/txts/' + txtFile), CLASSES)
-        latex_filename = './static/output/images/latex'
-        print(latex_filename)
+        latex_filename = './static/output/latex'+txtFile
         displaylatex(latex.replace("\n", ""), latex_filename)
         os.remove('./static/output/txts/' + txtFile)
         os.remove('./static/output/images/' + filename)

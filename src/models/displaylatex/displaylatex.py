@@ -1,7 +1,7 @@
 from pylatex import Document, Command, NoEscape
 
 def displaylatex(s, filepath):
-    doc = Document('basic', page_numbers=False)
+    doc = Document('basic', page_numbers=False, font_size="LARGE")
     doc.preamble.append(Command('usepackage', 'amsmath'))
     doc.preamble.append(Command('usepackage', 'geometry'))
     doc.preamble.append(Command('pagestyle', 'empty'))
