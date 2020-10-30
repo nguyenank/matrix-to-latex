@@ -56,11 +56,12 @@ def upload_files():
         print(txtFile)
         print(results_to_latex(('./static/output/txts/' + txtFile), CLASSES))
         latex = results_to_latex(('./static/output/txts/' + txtFile), CLASSES)
-        latex_filename = './static/output/images/latex_' + filename.strip('.jpg')+".png"
+        latex_filename = './static/output/images/latex'
+        print(latex_filename)
         displaylatex(latex.replace("\n", ""), latex_filename)
         os.remove('./static/output/txts/' + txtFile)
         os.remove('./static/output/images/' + filename)
-        return render_template('results.html', latex=latex, matrix_image = full_filename, image_filename= filename,latex_image = latex_filename) 
+        return render_template('results.html', latex=latex, matrix_image = full_filename, image_filename= filename,latex_pdf = latex_filename+".pdf")
 
 @app.route('/uploads/<filename>')
 def upload(filename):

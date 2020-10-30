@@ -1,19 +1,10 @@
-# displaylatex.py
-#
-# takes in a filepath and a string of LaTeX code bounded with $'s and
-# saves a rendered png image of the output to the filepath
-#
-# TO USE: run 'resultstolatex(latex_string, filepath)'
-
-import matplotlib.pyplot as plt
-import matplotlib as mpl
+from pylatex import Document, Command, NoEscape
 
 def displaylatex(s, filepath):
-    mpl.rcParams['font.size'] = 20
-    mpl.rcParams['text.usetex'] = True
-    mpl.rcParams['text.latex.preamble'] = r'\usepackage{{amsmath}}'
-
-    fig = plt.figure()
-
-    fig.text(0,1,s)
-    plt.savefig(filepath, bbox_inches='tight')
+    doc = Document('basic')
+    doc.preamble.append(Command('usepackage', 'amsmath'))
+    doc.preamble.append(Command('usepackage', 'geometry'))
+    doc.preamble.append(Command('pagestyle', 'empty'))
+    doc.preamble.append(NoEscape(r'\geometry{paperwidth=2.5in,paperheight=2.5in, margin=0.1in, hoffset=-0.2in}'))
+    doc.append(NoEscape(s))
+    doc.generate_pdf(filepath, clean_tex=False)
