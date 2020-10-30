@@ -14,7 +14,8 @@
             </div>
             <div class="col-sm">
                 <h2>LaTeX Code for your Matrix:</h2>
-                <textarea id="latexcode" rows="10" cols="25" readonly>{{ latex }}</textarea>
+                <textarea id="latexcode" rows="10" cols="25">{{ latex }}</textarea>
+                <button class="btn btn-primary btn-lg clickbtn" data-clipboard-target="#latexcode">Copy LaTeX Code</button>
             </div>
             <div class="col-sm">
                 <h2>Rendered LaTeX:</h2>
