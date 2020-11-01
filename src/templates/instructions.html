@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="jumbotron">
+    <h2 class="display-4">Instructions</h2>
+    <div class="row">
+        <div class="col-sm">
+            <h3>How to Convert your Handwritten Matrix to LaTeX</h3>
+            <ol>
+                <li>Ensure your matrix falls within our limitations (see criteria at right)</li>
+                <li>Take a picture of your handwritten matrix. For best results, make sure your picture is well-lit, has high contrast between writing and background and is black writing on white background. </li>
+                <li>Save your image as either a jpg or a png file.</li>
+                <li>Upload your image in the “Convert” tab.</li>
+                <li>Confirm you uploaded the right image and press “Convert Image”</li>
+                <li>When you get your results, ensure they are correct, then copy and paste them into your favorite LaTeX editor. If there are small mistakes in the conversion, be sure to fix them!</li>
+
+            </ol>
+        </div>
+        <div class="col-sm">
+            <h3>Matrix Limitations</h3>
+            <p>Currently, we are only able to provide conversion services to matrices which fulfill the following criteria:</p>
+            <ol>
+                <li>Single matrix (no matrix expressions)</li>
+                <li>The entries of the matrix are integers in the range -100 to 100</li>
+                <li>The matrix delimiters are not || </li>
+                
+            </ol>
+        </div>
+    </div>
+</div>
+{% endblock %}

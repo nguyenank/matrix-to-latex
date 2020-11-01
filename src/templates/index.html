@@ -1,33 +1,19 @@
-<!doctype html>
-<html>
-  <head>
-    <title>File Upload</title>
-  </head>
-  <body>
-    <h1>File Upload</h1>
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>{% block title %} {% endblock %}</h1>
+  <div class="jumbotron">
+    <h1 class="display-4">Welcome to MaTreX!</h1>
+    <p class="lead">Convert your image of a handwritten matrix to LaTeX without writing a single ampersand!
+      Upload your image using the button below, which will prompt a file browser. Please ensure you upload a
+      .jpg file type. For best results, your image should be well lit and black/dark writing on a white
+      background. See Below for some example images:</p>
+    <hr class="my-4">
+    <p>Insert Example Images here:</p>
     <form method="POST" action="" enctype="multipart/form-data">
       <p><input type="file" name="file"></p>
       <p><input type="submit" value="Submit"></p>
     </form>
-    <hr>
-    {% for file in files %}
-      <img src="{{ url_for('output', filename=file) }}" style="width: 128px">
-    {% endfor %}
-  </body>
-  <h2>Image Uploaded:</h2>
-  <body>
-    <img src="{{ matrix_image }}" alt="{{image_filename}}">
-  </body>
-  <p>File Name:</p>
-  <pre>
-    {{ image_filename }}
-  </pre>
+  </div>
+{% endblock %}
 
-  <h2>LaTeX Code for your Matrix:</h2>
-  <textarea id="latexcode" rows="10" cols="25" readonly>{{ latex }}</textarea>
-
-  <h2>Rendered LaTeX:</h2>
-  <body>
-    <img src="{{ latex_image }}">
-  </body>
-</html>

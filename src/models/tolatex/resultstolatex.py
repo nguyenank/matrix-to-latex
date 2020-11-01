@@ -16,10 +16,8 @@ def to_array(results):
     """
     converts formatted YOLOv5 output and isolates brackets, while converting
     matrix to 2d array
-
     input: list with elements in the form ['symbol class', [x_center, y_center]]
     output: list of the form [['bracket', 'bracket'], [2D array representing matrix]]
-
     uses a + or - 10% margin of error for determining rows
     """
     MARGINOFERROR = .125
@@ -63,13 +61,13 @@ def to_latex(brackets, elements):
     start = end = ""
     if "(" in brackets or ")" in brackets:
         start = "$\\begin{pmatrix} \n"
-        end = "\\end{pmatrix}$"
+        end = "\n \\end{pmatrix}$"
     elif "[" in brackets or "]" in brackets:
-        start = "$\\begin{bmatrix} "
-        end = "\\end{bmatrix}$"
+        start = "\n$\\begin{bmatrix}\n"
+        end = "\n\\end{bmatrix}$"
     elif "{" in brackets or "}" in brackets:
-        start = "$\\begin{Bmatrix} "
-        end = "\\end{Bmatrix}$"
+        start = "\n$\\begin{Bmatrix}\n"
+        end = "\n\\end{Bmatrix}$"
     s = start
     for row in elements:
         for element in row:
@@ -93,7 +91,6 @@ def read_file(filepath, classes):
         reads in a file and YOLOv5 format, tosses the height and weight information,
         and returns that information formatted with index codes converted
         to symbol classes and the center information grouped
-
         input:
             filepath: path to a file in YOLOv5 format
             classes: the list of symbol classes for the model
@@ -121,6 +118,3 @@ def results_to_latex(filepath, classes):
     results = read_file(filepath, classes)
     [brackets, elements] = to_array(results)
     return to_latex(brackets, elements)
-
-
-#print(results_to_latex('/Users/jenniferzecena/matrix-to-latex/src/static/output/txts/7_em_27.txt', CLASSES))
