@@ -26,4 +26,4 @@ def displaylatex(s, filepath):
     doc.append(NoEscape(s))
     doc.generate_pdf(filepath, clean_tex=False)
     # remove generated tex file
-    os.system(f'rm {filepath+'.tex'}')
+    os.system(f'rm {filepath+".tex"}')

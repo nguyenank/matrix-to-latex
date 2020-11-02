@@ -7,7 +7,7 @@ from models.displaylatex.displaylatex import displaylatex
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024
 app.config['UPLOAD_EXTENSIONS'] = ['.jpg', '.png', '.jpeg']
-# location of uplaoded image  and rendered pdf
+# location of uplaoded image and rendered pdf
 app.config['STATIC_MATRIX_PATH'] = './static/matrix'
 app.config['STATIC_MATRIX_FOLDER'] = app.config['STATIC_MATRIX_PATH'][2:]
 # temporary, intermediate files
@@ -24,8 +24,8 @@ def index():
 @app.route('/', methods=['POST'])
 def upload_files():
     # remove and remake folder to clean out anything from past runs
-    os.system(f'rm -r {app.config['STATIC_MATRIX_FOLDER']}')
-    os.system(f'mkdir {app.config['STATIC_MATRIX_FOLDER']}')
+    os.system(f'rm -r {app.config["STATIC_MATRIX_FOLDER"]}')
+    os.system(f'mkdir {app.config["STATIC_MATRIX_FOLDER"]}')
     uploaded_file = request.files['file']
     filename = uploaded_file.filename
     if filename != '':
@@ -40,8 +40,8 @@ def upload_files():
         uploaded_file.save(full_filename)
         # run YOLOv5 model
         os.system(f'python models/yolov5/detect.py ' \
-                f'--weights models/yolov5/best-2.pt --source {app.config['STATIC_MATRIX_FOLDER']} ' \
-                f'--out {app.config['TEMP_FOLDER']} --img 416 --conf 0.3 --save-txt')
+                f'--weights models/yolov5/best-2.pt --source {app.config["STATIC_MATRIX_FOLDER"]} ' \
+                f'--out {app.config["TEMP_FOLDER"]} --img 416 --conf 0.4 --save-txt')
         # run toLatex model
         latex = results_to_latex(
             os.path.join(app.config['TEMP_PATH'], file_root + '.txt'), CLASSES)
