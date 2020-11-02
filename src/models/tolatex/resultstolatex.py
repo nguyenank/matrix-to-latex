@@ -20,19 +20,21 @@ def to_array(results):
         map(
             lambda x: x[0],
             list(
-                filter(lambda x: x[0] in ["(", ")", "[", "]", "{", "}", "|"],
+                filter(lambda x: x[0] in ['(', ')', '[', ']', '{', '}', '|'],
                        results))))
 
     results = list(
-        filter(lambda x: x[0] not in ["(", ")", "[", "]", "{", "}", "|"], results))
+        filter(lambda x: x[0] not in ['(', ')', '[', ']', '{', '}', '|'],
+               results))
     elements = []
     while len(results) > 0:
         # find object closest to the top of image
         [y_coordinate, element] = min(map(lambda x: [x[1][1], x], results))
         # find all elements with center within margin of error (5% either way) of that element
         row_elements = list(
-            filter(lambda x: within_margin(x[1][1], y_coordinate, MARGINOFERROR),
-                   results))
+            filter(
+                lambda x: within_margin(x[1][1], y_coordinate, MARGINOFERROR),
+                results))
         for elem in row_elements:
             results.remove(elem)
         # sort by x-coordinates
@@ -52,33 +54,33 @@ def to_latex(brackets, elements):
         to that matrix
     output: string of LaTeX code
     """
-    start = "$"
-    if "(" in brackets or ")" in brackets:
-        start += "\\begin{pmatrix} \n"
-        end = "\n \\end{pmatrix}"
-    elif "[" in brackets or "]" in brackets:
-        start += "\\begin{bmatrix}\n"
-        end = "\n\\end{bmatrix}"
-    elif "{" in brackets or "}" in brackets:
-        start += "\\begin{Bmatrix}\n"
-        end = "\n\\end{Bmatrix}"
-    elif "|" in brackets:
-        start += "\\begin{vmatrix}\n"
-        end = "\n\\end{vmatrix}"
+    start = '$'
+    if '(' in brackets or ')' in brackets:
+        start += '\\begin{pmatrix} \n'
+        end = '\n \\end{pmatrix}'
+    elif '[' in brackets or ']' in brackets:
+        start += '\\begin{bmatrix}\n'
+        end = '\n\\end{bmatrix}'
+    elif '{' in brackets or '}' in brackets:
+        start += '\\begin{Bmatrix}\n'
+        end = '\n\\end{Bmatrix}'
+    elif '|' in brackets:
+        start += '\\begin{vmatrix}\n'
+        end = '\n\\end{vmatrix}'
     else:
-        start += "\\begin{matrix}\n"
-        end = "\n\\end{matrix}"
-    end+="$"
+        start += '\\begin{matrix}\n'
+        end = '\n\\end{matrix}'
+    end += '$'
     s = start
     for row in elements:
         for element in row:
             s += element
             if element != '-':
                 # do not add space for negative sign
-                s += " & "
-        s = s[:-2]  # remove last "& "
-        s += "\\\\ \n"
-    return s[:-4] + end # remove last "\\\\ \n"
+                s += ' & '
+        s = s[:-2]  # remove last '& '
+        s += '\\\\ \n'
+    return s[:-4] + end  # remove last '\\\\ \n'
 
 
 def within_margin(testvalue, mainvalue, margin):

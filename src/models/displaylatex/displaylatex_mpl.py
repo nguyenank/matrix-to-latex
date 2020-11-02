@@ -8,6 +8,7 @@
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 
+
 def displaylatex(s, filepath):
     mpl.rcParams['font.size'] = 20
     mpl.rcParams['text.usetex'] = True
@@ -15,5 +16,5 @@ def displaylatex(s, filepath):
 
     fig = plt.figure()
 
-    fig.text(0,1,s)
+    fig.text(0, 1, s)
     plt.savefig(filepath, bbox_inches='tight')
