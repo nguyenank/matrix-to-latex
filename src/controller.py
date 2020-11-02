@@ -1,80 +1,64 @@
-import imghdr
 import os
-from flask import Flask, render_template, request, redirect, url_for, abort, \
-    send_from_directory
+from flask import Flask, render_template, request, abort
 from models.tolatex.resultstolatex import results_to_latex
-from models.tolatex.resultstolatex import CLASSES
+from models.classes import CLASSES
 from models.displaylatex.displaylatex import displaylatex
-# allow latex rendering
-import matplotlib as mpl
-mpl.use('Agg')
 
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024
 app.config['UPLOAD_EXTENSIONS'] = ['.jpg', '.png', '.jpeg']
-app.config['UPLOAD_PATH'] = './static/uploads'
-app.config['OUTPUT_PATH'] = './static/output'
-
-def validate_image(stream):
-    header = stream.read(512)  # 512 bytes should be enough for a header check
-    stream.seek(0)  # reset stream pointer
-    format = imghdr.what(None, header)
-    if not format:
-        return None
-    return '.' + (format if format != 'jpeg' else 'jpg')
+# location of uplaoded image and rendered pdf
+app.config['STATIC_MATRIX_PATH'] = './static/matrix'
+app.config['STATIC_MATRIX_FOLDER'] = app.config['STATIC_MATRIX_PATH'][2:]
+# temporary, intermediate files
+app.config['TEMP_PATH'] = './temp'
+app.config['TEMP_FOLDER'] = app.config['TEMP_PATH'][2:]
+app.config['CLASSES'] = CLASSES
 
 
 @app.route('/')
 def index():
-    files = os.listdir(app.config['OUTPUT_PATH'])
-    return render_template('index.html', files=files)
+    return render_template('index.html')
+
 
 @app.route('/', methods=['POST'])
 def upload_files():
-    os.system("rm -r static/uploads")
-    os.system("mkdir static/uploads")
-    os.system("rm -r static/output")
-    os.system("mkdir static/output")
+    # remove and remake folder to clean out anything from past runs
+    os.system(f'rm -r {app.config["STATIC_MATRIX_FOLDER"]}')
+    os.system(f'mkdir {app.config["STATIC_MATRIX_FOLDER"]}')
     uploaded_file = request.files['file']
     filename = uploaded_file.filename
     if filename != '':
-        file_ext = os.path.splitext(filename)[1]
-        if file_ext not in app.config['UPLOAD_EXTENSIONS'] or \
-                file_ext != validate_image(uploaded_file.stream):
+        # only continue with nonempty filename
+        file_root, file_ext = os.path.splitext(filename)
+        if file_ext not in app.config['UPLOAD_EXTENSIONS']:
+            # not a valid file extension
             abort(400)
-        uploaded_file.save(os.path.join(app.config['UPLOAD_PATH'], filename))
-        full_filename = os.path.join(app.config['UPLOAD_PATH'], filename)
-        os.system("python models/yolov5/detect.py --weights models/yolov5/last.pt --source static/uploads --out static/output --img 416 --conf 0.4 --save-txt")
-        print("these are the filenames")
-        print(filename[:-4])
-        print(filename[-4:])
-        if(filename[-4:]==".jpg"):
-            txtFile = filename.replace(".jpg",".txt")
-        elif(filename[-4:]==".png"):
-            txtFile = filename.replace(".png",".txt")
-        else:
-            txtFile = filename.replace(".jpeg",".txt")
-        print("this is the txtfile ")
-        print(txtFile)
-        print(results_to_latex(('./static/output/txts/' + txtFile), CLASSES))
-        latex = results_to_latex(('./static/output/txts/' + txtFile), CLASSES)
-        latex_filename = './static/output/latex'+txtFile
-        displaylatex(latex.replace("\n", ""), latex_filename)
-        os.remove('./static/output/txts/' + txtFile)
-        os.remove('./static/output/images/' + filename)
-        return render_template('results.html', latex=latex, matrix_image = full_filename, image_filename= filename,latex_pdf = latex_filename+".pdf")
+        # save the uplaoded file to STATIC_PATH
+        full_filename = os.path.join(app.config['STATIC_MATRIX_PATH'],
+                                     filename)
+        uploaded_file.save(full_filename)
+        # run YOLOv5 model
+        os.system(f'python models/yolov5/detect.py ' \
+                f'--weights models/yolov5/best-2.pt --source {app.config["STATIC_MATRIX_FOLDER"]} ' \
+                f'--out {app.config["TEMP_FOLDER"]} --img 416 --conf 0.4 --save-txt')
+        # run toLatex model
+        latex = results_to_latex(
+            os.path.join(app.config['TEMP_PATH'], file_root + '.txt'), CLASSES)
+        latex_filename = os.path.join(app.config['STATIC_MATRIX_PATH'],
+                                      file_root)
+        # run renderLatex model
+        displaylatex(latex.replace('\n', ''), latex_filename)
+        # delete temporary folder
+        os.system('rm -r temp')
+        return render_template('results.html', latex=latex, matrix_image = full_filename, \
+                            image_filename= filename,latex_pdf = latex_filename+'.pdf')
 
-@app.route('/uploads/<filename>')
-def upload(filename):
-    return send_from_directory(app.config['UPLOAD_PATH'], filename)
-
-@app.route('/output/<filename>')
-def output(filename):
-    return send_from_directory(app.config['OUTPUT_PATH'], filename)
 
 @app.route('/about')
 def about():
     return render_template('about.html')
+
 
 @app.route('/instructions')
 def instructions():
