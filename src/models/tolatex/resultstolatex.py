@@ -5,12 +5,6 @@
 #
 # TO USE: run 'resultstolatex(filepath, classes)'
 
-CLASSES = [
-    '(', '-3', '1', '-4', '2', ')', '0', '3', '-2', '-7', '19', '70', '4',
-    '-1', '5', '|', '6', '-10', '10', '-25', '-9', '8', '7', '-5', '9', '[',
-    ']', 'a', 'b', 'c', 'd', '-6', '28', '-x', '12', '-8', '-b', '-c'
-]
-
 
 def to_array(results):
     """
@@ -26,11 +20,11 @@ def to_array(results):
         map(
             lambda x: x[0],
             list(
-                filter(lambda x: x[0] in ["(", ")", "[", "]", "{", "}"],
+                filter(lambda x: x[0] in ["(", ")", "[", "]", "{", "}", "|"],
                        results))))
 
     results = list(
-        filter(lambda x: x[0] not in ["(", ")", "[", "]", "{", "}"], results))
+        filter(lambda x: x[0] not in ["(", ")", "[", "]", "{", "}", "|"], results))
     elements = []
     while len(results) > 0:
         # find object closest to the top of image
@@ -58,24 +52,33 @@ def to_latex(brackets, elements):
         to that matrix
     output: string of LaTeX code
     """
-    start = end = ""
+    start = "$"
     if "(" in brackets or ")" in brackets:
-        start = "$\\begin{pmatrix} \n"
-        end = "\n \\end{pmatrix}$"
+        start += "\\begin{pmatrix} \n"
+        end = "\n \\end{pmatrix}"
     elif "[" in brackets or "]" in brackets:
-        start = "\n$\\begin{bmatrix}\n"
-        end = "\n\\end{bmatrix}$"
+        start += "\\begin{bmatrix}\n"
+        end = "\n\\end{bmatrix}"
     elif "{" in brackets or "}" in brackets:
-        start = "\n$\\begin{Bmatrix}\n"
-        end = "\n\\end{Bmatrix}$"
+        start += "\\begin{Bmatrix}\n"
+        end = "\n\\end{Bmatrix}"
+    elif "|" in brackets:
+        start += "\\begin{vmatrix}\n"
+        end = "\n\\end{vmatrix}"
+    else:
+        start += "\\begin{matrix}\n"
+        end = "\n\\end{matrix}"
+    end+="$"
     s = start
     for row in elements:
         for element in row:
             s += element
-            s += " & "
+            if element != '-':
+                # do not add space for negative sign
+                s += " & "
         s = s[:-2]  # remove last "& "
         s += "\\\\ \n"
-    return s[:-4] + end
+    return s[:-4] + end # remove last "\\\\ \n"
 
 
 def within_margin(testvalue, mainvalue, margin):
