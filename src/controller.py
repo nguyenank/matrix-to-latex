@@ -1,5 +1,14 @@
+"""
+controller.py
+
+handles the paths to the various views/templates of the webapp,
+as well as calling the models
+also deals with generated files from calling the models,
+categorizing them as static assets or temporary files that are deleted
+"""
+
 import os
-from flask import Flask, render_template, request, abort
+from flask import Flask, render_template, request
 from models.tolatex.resultstolatex import results_to_latex
 from models.classes import CLASSES
 from models.displaylatex.displaylatex import displaylatex
@@ -18,11 +27,22 @@ app.config['CLASSES'] = CLASSES
 
 @app.route('/')
 def index():
+    """
+        displays index view;
+        initial page with brief instructions
+        and ability to upload image
+    """
     return render_template('index.html')
 
 
 @app.route('/', methods=['POST'])
 def upload_files():
+    """
+        verifies uploaded file as valid image, runs
+        the YOLOv5, tolatex, and renderlatex model in that order,
+        deletes any intermediate files, and displays results view
+        with initial image, generated latex text, and rendered pdf
+    """
     # remove and remake folder to clean out anything from past runs
     os.system(f'rm -r {app.config["STATIC_MATRIX_FOLDER"]}')
     os.system(f'mkdir {app.config["STATIC_MATRIX_FOLDER"]}')
@@ -33,14 +53,17 @@ def upload_files():
         file_root, file_ext = os.path.splitext(filename)
         if file_ext not in app.config['UPLOAD_EXTENSIONS']:
             # not a valid file extension
-            abort(400)
+            # TODO: return error template
+            return render_template('index.html')
+
         # save the uplaoded file to STATIC_PATH
         full_filename = os.path.join(app.config['STATIC_MATRIX_PATH'],
                                      filename)
         uploaded_file.save(full_filename)
         # run YOLOv5 model
         os.system(f'python models/yolov5/detect.py ' \
-                f'--weights models/yolov5/best-2.pt --source {app.config["STATIC_MATRIX_FOLDER"]} ' \
+                f'--weights models/yolov5/best-2.pt' \
+                f'--source {app.config["STATIC_MATRIX_FOLDER"]} ' \
                 f'--out {app.config["TEMP_FOLDER"]} --img 416 --conf 0.4 --save-txt')
         # run toLatex model
         latex = results_to_latex(
@@ -53,13 +76,23 @@ def upload_files():
         os.system('rm -r temp')
         return render_template('results.html', latex=latex, matrix_image = full_filename, \
                             image_filename= filename,latex_pdf = latex_filename+'.pdf')
-
+    # no file
+    # TODO: return error template
+    return render_template('index.html')
 
 @app.route('/about')
 def about():
+    """
+        displays about view;
+        about creators and reasoning behind the project
+    """
     return render_template('about.html')
 
 
 @app.route('/instructions')
 def instructions():
+    """
+        displays instruction view about
+        how to use webapp and limitations of it
+    """
     return render_template('instructions.html')
