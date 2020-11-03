@@ -1,20 +1,24 @@
-# resultstolatex.py
-#
-# takes in a filepath that goes to a file in YOLOv5 format and the symbol
-# classes list and returns the string LaTeX code corresponding to that file
-#
-# TO USE: run 'resultstolatex(filepath, classes)'
+"""
+resultstolatex.py
+
+takes in a filepath that goes to a file in YOLOv5 format and the symbol
+classes list and returns the string LaTeX code corresponding to that file
+
+TO USE: run 'resultstolatex(filepath, classes)'
+"""
 
 
 def to_array(results):
     """
     converts formatted YOLOv5 output and isolates brackets, while converting
     matrix to 2d array
-    input: list with elements in the form ['symbol class', [x_center, y_center]]
-    output: list of the form [['bracket', 'bracket'], [2D array representing matrix]]
-    uses a + or - 10% margin of error for determining rows
+    input: list with elements in the form:
+        ['symbol class', [x_center, y_center]]
+    output: list of the form:
+        [['bracket', 'bracket'], [2D array representing matrix]]
+    uses a + or - 12.5% margin of error for determining rows
     """
-    MARGINOFERROR = .125
+    margin_of_error = .125
     # remove brackets
     brackets = list(
         map(
@@ -29,16 +33,16 @@ def to_array(results):
     elements = []
     while len(results) > 0:
         # find object closest to the top of image
-        [y_coordinate, element] = min(map(lambda x: [x[1][1], x], results))
-        # find all elements with center within margin of error (5% either way) of that element
+        y_coordinate = min(map(lambda x: [x[1][1], x], results))[0]
+        # find all elements with center within margin of error
         row_elements = list(
-            filter(
-                lambda x: within_margin(x[1][1], y_coordinate, MARGINOFERROR),
-                results))
+            filter(lambda x: within_margin(x[1][1], y_coordinate,
+                                           margin_of_error), results))
         for elem in row_elements:
             results.remove(elem)
         # sort by x-coordinates
-        x_coord_elements = list(map(lambda x: [x[1][0], x[0]], row_elements))
+        x_coord_elements = list(map(lambda x: [x[1][0], x[0]],
+                                row_elements))
         x_coord_elements.sort()
         row = list(map(lambda x: x[1], x_coord_elements))
         elements += [row]
@@ -50,8 +54,8 @@ def to_latex(brackets, elements):
     takes brackets and 2d array of elements
     input:
         brackets: list of the opening and closing brackets of a matrix
-        elements: 2d array of the elements and returns the latex code corresponding
-        to that matrix
+        elements: 2d array of the elements and returns the latex code
+        corresponding to that matrix
     output: string of LaTeX code
     """
     start = '$'
@@ -71,29 +75,29 @@ def to_latex(brackets, elements):
         start += '\\begin{matrix}\n'
         end = '\n\\end{matrix}'
     end += '$'
-    s = start
+    latex = start
     for row in elements:
         for element in row:
-            s += element
+            latex += element
             if element != '-':
                 # do not add space for negative sign
-                s += ' & '
-        s = s[:-2]  # remove last '& '
-        s += '\\\\ \n'
-    return s[:-4] + end  # remove last '\\\\ \n'
+                latex += ' & '
+        latex = latex[:-2]  # remove last '& '
+        latex += '\\\\ \n'
+    return latex[:-4] + end  # remove last '\\\\ \n'
 
 
 def within_margin(testvalue, mainvalue, margin):
     """
-    returns true if and only if testvalue is within margin of mainvalue
+        returns true if and only if
+        testvalue is within margin of mainvalue
     """
-    return (testvalue <= mainvalue + margin) and (testvalue >=
-                                                  mainvalue - margin)
+    return mainvalue - margin <= testvalue <= mainvalue + margin
 
 
 def read_file(filepath, classes):
     """
-        reads in a file and YOLOv5 format, tosses the height and weight information,
+        reads in a file and YOLOv5 format,
         and returns that information formatted with index codes converted
         to symbol classes and the center information grouped
         input:
@@ -101,7 +105,8 @@ def read_file(filepath, classes):
             classes: the list of symbol classes for the model
         output:
             list, with each element corresponding to one bounding box
-                each element is in the format ['symbol class', [x_center, y_center]]
+            each element is in the format
+            'symbol class', [x_center, y_center]]
     """
     with open(filepath) as file:
         lines = file.readlines()
