@@ -73,7 +73,7 @@ def upload_files():
         # run renderLatex model
         displaylatex(latex.replace('\n', ''), latex_filename)
         # delete temporary folder
-        # os.system('rm -r temp')
+        os.system('rm -r temp')
         return render_template('results.html', latex=latex, matrix_image = full_filename, \
                             image_filename= filename,latex_pdf = latex_filename+'.pdf')
     # no file
