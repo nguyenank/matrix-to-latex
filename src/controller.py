@@ -62,7 +62,7 @@ def upload_files():
         uploaded_file.save(full_filename)
         # run YOLOv5 model
         os.system(f'python models/yolov5/detect.py ' \
-                f'--weights models/yolov5/best-2.pt' \
+                f'--weights models/yolov5/best-2.pt ' \
                 f'--source {app.config["STATIC_MATRIX_FOLDER"]} ' \
                 f'--out {app.config["TEMP_FOLDER"]} --img 416 --conf 0.4 --save-txt')
         # run toLatex model
@@ -73,7 +73,7 @@ def upload_files():
         # run renderLatex model
         displaylatex(latex.replace('\n', ''), latex_filename)
         # delete temporary folder
-        os.system('rm -r temp')
+        # os.system('rm -r temp')
         return render_template('results.html', latex=latex, matrix_image = full_filename, \
                             image_filename= filename,latex_pdf = latex_filename+'.pdf')
     # no file
