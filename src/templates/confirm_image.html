@@ -7,13 +7,15 @@
     <p class="lead">Convert your image of a handwritten matrix to LaTeX without writing a single ampersand!
       Upload your image using the button below, which will prompt a file browser. Please ensure you upload a
       .jpg file type. For best results, your image should be well lit and black/dark writing on a white
-      background. See Below for some example images:</p>
+      background. See Below for some example images: </p>
     <hr class="my-4">
-    <p>Insert Example Images here:</p>
-    <a class="btn btn-primary btn-lg" href="{{ url_for('confirm_image')}}" role="button">Convert an image</a>
-    <!-- <form method="POST" action="" enctype="multipart/form-data">
+      <p> Please Confirm Your Image below:</p>
+      <img src="{{ matrix_image }}" alt="{{image_filename}}">
+      <p>File Name: {{ image_filename }} </p>
+    <form method="POST" action="" enctype="multipart/form-data">
+      <p> Upload another image or confirm:</p>
       <p><input type="file" name="file"></p>
-      <p><input type="submit" value="Submit"></p>
-    </form> -->
+      <p><input type="submit" value="Confirm Image"></p>
+    </form>
   </div>
 {% endblock %}
