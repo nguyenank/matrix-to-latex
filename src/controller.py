@@ -61,10 +61,11 @@ def upload_files():
                                      filename)
         uploaded_file.save(full_filename)
         # run YOLOv5 model
-        os.system(f'python models/yolov5/detect.py ' \
-                f'--weights models/yolov5/best-2.pt ' \
-                f'--source {app.config["STATIC_MATRIX_FOLDER"]} ' \
-                f'--out {app.config["TEMP_FOLDER"]} --img 416 --conf 0.4 --save-txt')
+        os.system(f'python models/yolov5/detect.py '
+                  f'--weights models/yolov5/best-2.pt '
+                  f'--source {app.config["STATIC_MATRIX_FOLDER"]} '
+                  f'--out {app.config["TEMP_FOLDER"]} '
+                  f'--img 416 --conf 0.4 --save-txt')
         # run toLatex model
         latex = results_to_latex(
             os.path.join(app.config['TEMP_PATH'], file_root + '.txt'), CLASSES)
@@ -74,11 +75,14 @@ def upload_files():
         displaylatex(latex.replace('\n', ''), latex_filename)
         # delete temporary folder
         os.system('rm -r temp')
-        return render_template('results.html', latex=latex, matrix_image = full_filename, \
-                            image_filename= filename,latex_pdf = latex_filename+'.pdf')
+        return render_template('results.html', latex=latex,
+                               matrix_image=full_filename,
+                               image_filename=filename,
+                               latex_pdf=latex_filename+'.pdf')
     # no file
     # TODO: return error template
     return render_template('index.html')
+
 
 @app.route('/about')
 def about():
