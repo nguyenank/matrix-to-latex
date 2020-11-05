@@ -58,6 +58,10 @@ def to_latex(brackets, elements):
         corresponding to that matrix
     output: string of LaTeX code
     """
+    if brackets == [] and elements == []:
+        # no symbols found, retur empty string
+        return "No matrix detected."
+
     start = '$'
     if '(' in brackets or ')' in brackets:
         start += '\\begin{pmatrix} \n'

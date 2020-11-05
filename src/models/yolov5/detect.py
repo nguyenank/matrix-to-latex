@@ -89,6 +89,12 @@ def detect(save_img=False):
 
             save_path = str(Path(out) / Path(p).name)
             txt_path = str(Path(out) / Path(p).stem) + ('_%g' % dataset.frame if dataset.mode == 'video' else '')
+
+            # Create results file
+            if save_txt:
+                with open(txt_path + '.txt', 'a') as f:
+                    pass
+
             s += '%gx%g ' % img.shape[2:]  # print string
             gn = torch.tensor(im0.shape)[[1, 0, 1, 0]]  # normalization gain whwh
             if det is not None and len(det):
