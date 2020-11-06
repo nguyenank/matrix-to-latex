@@ -13,7 +13,8 @@
       <img src="{{ matrix_image }}" alt="{{image_filename}}">
       <p>File Name: {{ image_filename }} </p>
 
-    <form action="{{ url_for('loading') }}" method="POST">
+    <form action="{{ url_for('loading') }}" enctype ="multipart/form-data" method="POST">
+      <input type="hidden" name="filename" value="{{image_filename}}" >
       <input class="Submit" type="submit" onclick="return confirm('Are you sure?');">
         </form>
         <!-- Need to figure out a way to make the loading page actually load -->
