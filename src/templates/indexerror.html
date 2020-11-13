@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>{% block title %} {% endblock %}</h1>
+  <div class="jumbotron">
+    <h1 class="display-4">Welcome to MaTreX!</h1>
+    <p class="lead">Convert your image of a handwritten matrix to LaTeX without writing a single ampersand!
+      Upload your image using the button below, which will prompt a file browser. Please ensure you upload a
+      .jpg file type. For best results, your image should be well lit and black/dark writing on a white
+      background. See Below for some example images:</p>
+    <hr class="my-4">
+    <p>Insert Example Images here:</p>
+    <p>Wrong file type, please upload a file with a .jpg, .png, or .jpeg extension. </p>
+    <form method="POST" action="" enctype="multipart/form-data">
+      <p><input type="file" name="file"></p>
+      <p><input type="submit" value="Submit"></p>
+    </form>
+  </div>
+{% endblock %}

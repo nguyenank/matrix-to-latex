@@ -53,7 +53,35 @@ def upload_files():
         file_ext = os.path.splitext(filename)[1]
         if file_ext not in app.config['UPLOAD_EXTENSIONS']:
             # not a valid file extension
-            return render_template('index.html')
+            return render_template('indexerror.html')
+
+        # save the uplaoded file to STATIC_PATH
+        full_filename = os.path.join(app.config['STATIC_MATRIX_PATH'],
+                                     filename)
+        uploaded_file.save(full_filename)
+        return render_template('confirm_image.html', image_filename=filename,
+                               matrix_image=full_filename, loading=False)
+    return render_template('index.html')
+
+@app.route('/indexerror', methods=['POST'])
+def upload_files_after_error():
+    """
+        verifies uploaded file as valid image, runs
+        the YOLOv5, tolatex, and renderlatex model in that order,
+        deletes any intermediate files, and displays results view
+        with initial image, generated latex text, and rendered pdf
+    """
+    # remove and remake folder to clean out anything from past runs
+    os.system(f'rm -r {app.config["STATIC_MATRIX_FOLDER"]}')
+    os.system(f'mkdir {app.config["STATIC_MATRIX_FOLDER"]}')
+    uploaded_file = request.files['file']
+    filename = uploaded_file.filename
+    if filename != '':
+        # only continue with nonempty filename
+        file_ext = os.path.splitext(filename)[1]
+        if file_ext not in app.config['UPLOAD_EXTENSIONS']:
+            # not a valid file extension
+            return render_template('indexerror.html')
 
         # save the uplaoded file to STATIC_PATH
         full_filename = os.path.join(app.config['STATIC_MATRIX_PATH'],
