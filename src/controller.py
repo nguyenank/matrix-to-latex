@@ -15,6 +15,7 @@ app.config['TEMP_PATH'] = './temp'
 app.config['TEMP_FOLDER'] = app.config['TEMP_PATH'][2:]
 app.config['CLASSES'] = CLASSES
 
+loading = False
 
 @app.route('/')
 def index():
@@ -41,10 +42,12 @@ def upload_files1():
         full_filename = os.path.join(app.config['STATIC_MATRIX_PATH'],
                                      filename)
         uploaded_file.save(full_filename)
-        return render_template('confirm_image.html', image_filename = filename, matrix_image = full_filename)
+        return render_template('confirm_image.html', image_filename = filename, matrix_image = full_filename, loading=False)
 
 
-
+@app.route('/confirm_image', methods=['POST'])
+def render_loading():
+    return render_template("loading.html")
 
 @app.route('/loading', methods=['POST'])
 def predict():

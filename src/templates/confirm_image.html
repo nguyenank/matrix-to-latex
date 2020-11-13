@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 
 {% block content %}
+    </script>
+
   <h1>{% block title %} {% endblock %}</h1>
   <div class="jumbotron">
     <h1 class="display-4">Welcome to MaTreX!</h1>
@@ -10,18 +12,19 @@
       background. See Below for some example images: </p>
     <hr class="my-4">
       <p> Please Confirm Your Image below:</p>
-      <img src="{{ matrix_image }}" alt="{{image_filename}}">
+      <img name="showimg" src="{{ matrix_image }}" alt="{{image_filename}}">
       <p>File Name: {{ image_filename }} </p>
 
     <form action="{{ url_for('loading') }}" enctype ="multipart/form-data" method="POST">
       <input type="hidden" name="filename" value="{{image_filename}}" >
-      <input class="Submit" type="submit" onclick="return confirm('Are you sure?');">
+      <button class="Submit" type="submit">Confirm</button>
         </form>
-        <!-- Need to figure out a way to make the loading page actually load -->
+
+    </div>
     <form method="POST" action="" enctype="multipart/form-data">
       <p> Or, Upload a different image:</p>
       <p><input type="file" name="file"></p>
-        <p><input type="submit" value="Submit"></p>
+      <p><input type="submit" value="Submit"></p>
     </form>
   </div>
 {% endblock %}
