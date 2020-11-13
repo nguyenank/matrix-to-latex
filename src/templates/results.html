@@ -5,17 +5,18 @@
     <h2 class="display-4">Results</h2>
     <p class="lead">Here is the LaTeX code for your matrix. Please take a moment to check the LaTeX for errors before you copy and paste into your favorite text editor.
     </p>
+    <hr class="my-4">
     <div class="container">
         <div class="row">
             <div class="col-sm">
-                <h2>Image Uploaded:</h2>
+                <h2>Uploaded Image:</h2>
                 <img src="{{ matrix_image }}" alt="{{image_filename}}">
-                <p>File Name: {{ image_filename }} </p>
+                <p class="lead"><b>File Name:</b> {{ image_filename }} </p>
             </div>
             <div class="col-sm">
-                <h2>LaTeX Code for your Matrix:</h2>
+                <h2>LaTeX Code:</h2>
                 <textarea id="latexcode" rows="10" cols="25">{{ latex }}</textarea>
-                <button class="btn btn-primary btn-lg clickbtn" data-clipboard-target="#latexcode">Copy LaTeX Code</button>
+                <div class = "text-center"><button class="btn btn-secondary clickbtn" data-clipboard-target="#latexcode">Copy LaTeX Code</button></div>
             </div>
             <div class="col-sm">
                 <h2>Rendered LaTeX:</h2>
@@ -23,6 +24,9 @@
             </div>
         </div>
     </div>
-    <a class="btn btn-primary btn-lg" href="{{ url_for('index')}}" role="button">Convert Another Image Here</a>
+    <p></p>
+    <div class = "text-center">
+      <a class="btn btn-secondary btn-lg" href="{{ url_for('index')}}" role="button">Convert Another Image</a>
+    </div>
   </div>
 {% endblock %}

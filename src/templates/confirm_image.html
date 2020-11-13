@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    </script>
+
+  <h1>{% block title %} {% endblock %}</h1>
+  <div class="jumbotron">
+    <h1 class="display-4">Welcome to MaTreX!</h1>
+    <p class="lead">Convert your image of a handwritten matrix to LaTeX without writing a single ampersand!
+      Upload your image using the button below, which will prompt a file browser. Please ensure you upload a
+      .jpg file type. For best results, your image should be well lit and black/dark writing on a white
+      background.</p>
+    <hr class="my-4">
+      <h3> Confirm Your Image Below:</h3>
+      <img src="{{ matrix_image }}" alt="{{image_filename}}">
+      <br>
+      <p class="lead"><b>File Name:</b> {{ image_filename }} </p>
+
+    <form id="confirmForm" action="{{ url_for('predict') }}" enctype ="multipart/form-data" method="POST">
+      <input type="hidden" name="filename" value="{{image_filename}}" >
+      <button class="btn btn-secondary submit" type="submit">Convert Image</button>
+        </form>
+    <hr class="my-4">
+    <h3> Upload A Different Image:</h3>
+
+    <form method="POST" action="" enctype="multipart/form-data">
+        <div class="custom-file">
+          <input type="file" class="custom-file-input" id="customFile" name="file">
+          <label class="custom-file-label" for="customFile">Choose file</label>
+        </div>
+      <p></p>
+      <p><button class="btn btn-secondary" type="submit" value="Submit">Submit Different Image</button></p>
+    </form>
+  </div>
+
+{% endblock %}
