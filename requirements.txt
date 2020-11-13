@@ -3,7 +3,7 @@ gunicorn
 Markdown
 matplotlib
 numpy
-opencv-python-headless
+opencv-python-headless==4.4.0.44
 requests
 scipy
 https://download.pytorch.org/whl/cpu/torch-1.6.0%2Bcpu-cp38-cp38-linux_x86_64.whl

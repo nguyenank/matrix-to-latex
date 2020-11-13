@@ -1,5 +1,14 @@
+"""
+controller.py
+
+handles the paths to the various views/templates of the webapp,
+as well as calling the models
+also deals with generated files from calling the models,
+categorizing them as static assets or temporary files that are deleted
+"""
+
 import os
-from flask import Flask, render_template, request, abort
+from flask import Flask, render_template, request
 from models.tolatex.resultstolatex import results_to_latex
 from models.classes import CLASSES
 from models.displaylatex.displaylatex import displaylatex
@@ -19,14 +28,24 @@ loading = False
 
 @app.route('/')
 def index():
+    """
+        displays index view;
+        initial page with brief instructions
+        and ability to upload image
+    """
     return render_template('index.html')
 
 file_root = ''
 
 
 @app.route('/', methods=['POST'])
-def upload_files1():
-
+def upload_files():
+    """
+        verifies uploaded file as valid image, runs
+        the YOLOv5, tolatex, and renderlatex model in that order,
+        deletes any intermediate files, and displays results view
+        with initial image, generated latex text, and rendered pdf
+    """
     # remove and remake folder to clean out anything from past runs
     os.system(f'rm -r {app.config["STATIC_MATRIX_FOLDER"]}')
     os.system(f'mkdir {app.config["STATIC_MATRIX_FOLDER"]}')
@@ -37,20 +56,20 @@ def upload_files1():
         file_root, file_ext = os.path.splitext(filename)
         if file_ext not in app.config['UPLOAD_EXTENSIONS']:
             # not a valid file extension
-            abort(400)
+            # TODO: return error template
+            return render_template('index.html')
+
         # save the uplaoded file to STATIC_PATH
         full_filename = os.path.join(app.config['STATIC_MATRIX_PATH'],
                                      filename)
         uploaded_file.save(full_filename)
         return render_template('confirm_image.html', image_filename = filename, matrix_image = full_filename, loading=False)
 
-
-@app.route('/confirm_image', methods=['POST'])
-def render_loading():
-    return render_template("loading.html")
-
 @app.route('/results', methods=['POST'])
 def predict():
+    """
+        runs the three models and displays results view
+    """
     filename = request.form['filename']
     file_root, file_ext = os.path.splitext(filename)
     full_filename = os.path.join(app.config['STATIC_MATRIX_PATH'],
@@ -72,9 +91,17 @@ def predict():
 
 @app.route('/about')
 def about():
+    """
+        displays about view;
+        about creators and reasoning behind the project
+    """
     return render_template('about.html')
 
 
 @app.route('/instructions')
 def instructions():
+    """
+        displays instruction view about
+        how to use webapp and limitations of it
+    """
     return render_template('instructions.html')
