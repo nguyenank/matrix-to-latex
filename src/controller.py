@@ -24,7 +24,6 @@ app.config['TEMP_PATH'] = './temp'
 app.config['TEMP_FOLDER'] = app.config['TEMP_PATH'][2:]
 app.config['CLASSES'] = CLASSES
 
-loading = False
 
 @app.route('/')
 def index():
@@ -34,8 +33,6 @@ def index():
         and ability to upload image
     """
     return render_template('index.html')
-
-file_root = ''
 
 
 @app.route('/', methods=['POST'])
@@ -53,17 +50,19 @@ def upload_files():
     filename = uploaded_file.filename
     if filename != '':
         # only continue with nonempty filename
-        file_root, file_ext = os.path.splitext(filename)
+        file_ext = os.path.splitext(filename)[1]
         if file_ext not in app.config['UPLOAD_EXTENSIONS']:
             # not a valid file extension
-            # TODO: return error template
             return render_template('index.html')
 
         # save the uplaoded file to STATIC_PATH
         full_filename = os.path.join(app.config['STATIC_MATRIX_PATH'],
                                      filename)
         uploaded_file.save(full_filename)
-        return render_template('confirm_image.html', image_filename = filename, matrix_image = full_filename, loading=False)
+        return render_template('confirm_image.html', image_filename=filename,
+                               matrix_image=full_filename, loading=False)
+    return render_template('index.html')
+
 
 @app.route('/results', methods=['POST'])
 def predict():
@@ -71,22 +70,28 @@ def predict():
         runs the three models and displays results view
     """
     filename = request.form['filename']
-    file_root, file_ext = os.path.splitext(filename)
+    file_root = os.path.splitext(filename)[0]
     full_filename = os.path.join(app.config['STATIC_MATRIX_PATH'],
                                  filename)
     # run YOLOv5 model
-    os.system(f'python models/yolov5/detect.py ' \
-            f'--weights models/yolov5/best-2.pt --source {app.config["STATIC_MATRIX_FOLDER"]} ' \
-            f'--out {app.config["TEMP_FOLDER"]} --img 416 --conf 0.4 --save-txt')
+    os.system(f'python models/yolov5/detect.py '
+              f'--weights models/yolov5/best-2.pt '
+              f'--source {app.config["STATIC_MATRIX_FOLDER"]} '
+              f'--out {app.config["TEMP_FOLDER"]} '
+              f'--img 416 --conf 0.4 --save-txt')
     # run toLatex model
-    latex = results_to_latex(os.path.join(app.config['TEMP_PATH'], file_root + '.txt'), CLASSES)
+    latex = results_to_latex(
+            os.path.join(app.config['TEMP_PATH'], file_root + '.txt'), CLASSES)
     latex_filename = os.path.join(app.config['STATIC_MATRIX_PATH'],
                                   file_root)
     # run renderLatex model
     displaylatex(latex.replace('\n', ''), latex_filename)
     # delete temporary folder
     os.system('rm -r temp')
-    return render_template('results.html', latex=latex, matrix_image = full_filename, image_filename= filename,latex_pdf = latex_filename+'.pdf')
+    return render_template('results.html', latex=latex,
+                           matrix_image=full_filename,
+                           image_filename=filename,
+                           latex_pdf=latex_filename+'.pdf')
 
 
 @app.route('/about')
