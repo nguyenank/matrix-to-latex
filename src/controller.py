@@ -46,10 +46,12 @@ def upload_files1():
 
 
 
-@app.route('/loading', methods=['POST'])
+@app.route('/results', methods=['POST'])
 def predict():
     filename = request.form['filename']
     file_root, file_ext = os.path.splitext(filename)
+    full_filename = os.path.join(app.config['STATIC_MATRIX_PATH'],
+                                 filename)
     # run YOLOv5 model
     os.system(f'python models/yolov5/detect.py ' \
             f'--weights models/yolov5/best-2.pt --source {app.config["STATIC_MATRIX_FOLDER"]} ' \
@@ -69,9 +71,6 @@ def predict():
 def about():
     return render_template('about.html')
 
-@app.route('/loading')
-def loading():
-    return render_template('loading.html')
 
 @app.route('/instructions')
 def instructions():
